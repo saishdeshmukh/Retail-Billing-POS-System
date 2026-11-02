@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -26,12 +27,13 @@ int main()
     cout << "Enter number of products: ";
     cin >> n;
 
-    if (n <= 0 || n > 50)
+    if (cin.fail() || n <= 0 || n > 50)
     {
         cout << "Invalid number of products!";
         return 0;
     }
 
+    // Enter product details
     for (int i = 0; i < n; i++)
     {
         cout << "\nEnter product name: ";
@@ -50,33 +52,66 @@ int main()
         }
     }
 
+    // Display available products and stock condition
     cout << "\n===== AVAILABLE PRODUCTS =====\n";
 
     for (int i = 0; i < n; i++)
     {
-        cout << i + 1 << ". " << p[i].name
-             << " - Rs." << p[i].price
-             << " | Stock: " << p[i].stock << endl;
+        cout << "\nProduct Number: " << i + 1;
+        cout << "\nProduct Name: " << p[i].name;
+        cout << "\nPrice: Rs." << p[i].price;
+        cout << "\nStock Quantity: " << p[i].stock;
+
+        if (p[i].stock == 0)
+        {
+            cout << "\nStock Condition: OUT OF STOCK\n";
+        }
+        else if (p[i].stock <= 5)
+        {
+            cout << "\nStock Condition: LOW STOCK\n";
+        }
+        else
+        {
+            cout << "\nStock Condition: AVAILABLE\n";
+        }
     }
 
+    // Product selection
     cout << "\nEnter product number: ";
     cin >> choice;
 
-    if (choice < 1 || choice > n)
+    if (cin.fail() || choice < 1 || choice > n)
     {
         cout << "Invalid product choice!";
         return 0;
     }
 
-    cout << "Enter quantity: ";
-    cin >> qty;
-
-    if (qty <= 0 || qty > p[choice - 1].stock)
+    // Check selected product stock
+    if (p[choice - 1].stock == 0)
     {
-        cout << "Invalid quantity or insufficient stock!";
+        cout << "\nSorry! This product is OUT OF STOCK.";
         return 0;
     }
 
+    cout << "\nStock is available for " << p[choice - 1].name;
+    cout << "\nEnter quantity: ";
+    cin >> qty;
+
+    if (cin.fail() || qty <= 0)
+    {
+        cout << "Invalid quantity!";
+        return 0;
+    }
+
+    if (qty > p[choice - 1].stock)
+    {
+        cout << "\nInsufficient stock!";
+        cout << "\nAvailable stock: "
+             << p[choice - 1].stock;
+        return 0;
+    }
+
+    // Bill calculation
     total = p[choice - 1].price * qty;
 
     gst = 0;
@@ -88,17 +123,38 @@ int main()
 
     bill = total + gst;
 
+    // Update stock
     p[choice - 1].stock -= qty;
 
     cout << fixed << setprecision(2);
 
-    cout << "\n========== CUSTOMER BILL ==========\n";
+    // Display customer bill
+    cout << "\n\n========== CUSTOMER BILL ==========\n";
     cout << "Customer Name: " << customerName << endl;
     cout << "Product: " << p[choice - 1].name << endl;
     cout << "Quantity: " << qty << endl;
     cout << "Subtotal: Rs." << total << endl;
     cout << "GST: Rs." << gst << endl;
     cout << "Final Bill: Rs." << bill << endl;
+
+    // Display updated stock condition
+    cout << "\n===== UPDATED STOCK STATUS =====\n";
+    cout << "Product: " << p[choice - 1].name << endl;
+    cout << "Remaining Stock: "
+         << p[choice - 1].stock << endl;
+
+    if (p[choice - 1].stock == 0)
+    {
+        cout << "Stock Condition: OUT OF STOCK\n";
+    }
+    else if (p[choice - 1].stock <= 5)
+    {
+        cout << "Stock Condition: LOW STOCK\n";
+    }
+    else
+    {
+        cout << "Stock Condition: AVAILABLE\n";
+    }
 
     cout << "\nThank you for shopping!\n";
 
